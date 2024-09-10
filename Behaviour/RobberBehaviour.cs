@@ -24,15 +24,17 @@ namespace Dawud.BT.Behaviour
 
             _tree = new BehaviourTree("Robber Tree Behaviour");
             Sequence steal = new Sequence("Steal something");
+            Selector goToDoor = new Selector("Go To Door");
 
             Leaf goToBackDoor = new Leaf("Go To back door", GoToBackDoor);
             Leaf goToFrontDoor = new Leaf("Go To Front Door", GoToFrontDoor);
             Leaf goToDiamond = new Leaf("Go To Diamond", GoToDiamond);
             Leaf goToVan = new Leaf("Go To Van", GoToVan);
 
-            steal.AddChildren(goToBackDoor);
+            goToDoor.AddChildren(goToFrontDoor);
+            goToDoor.AddChildren(goToBackDoor);
+            steal.AddChildren(goToDoor);
             steal.AddChildren(goToDiamond);
-            steal.AddChildren(goToBackDoor);
             steal.AddChildren(goToVan);
             _tree.AddChildren(steal);
 
@@ -48,6 +50,7 @@ namespace Dawud.BT.Behaviour
             if (_tree.Status.Equals(ProcessStatusEnum.RUNNING))
             {
                 _tree.Status = _tree.Process();
+                return;
             }
             if(_tree.Status.Equals(ProcessStatusEnum.SUCCESS) || _tree.Status.Equals(ProcessStatusEnum.FAILED))
             {
@@ -57,23 +60,44 @@ namespace Dawud.BT.Behaviour
 
         private ProcessStatusEnum GoToDiamond()
         {
-            
-            return GenericActions.GoToDestination(_diamond.transform.position, this.gameObject, this);
+            return GoToItemToSteal(_diamond, ItemEnum.DIAMOND);
         }
 
         private ProcessStatusEnum GoToVan()
         {
-            return GenericActions.GoToDestination(_van.transform.position, this.gameObject, this);
-        }
-
-        private ProcessStatusEnum GoToBackDoor()
-        {
-            return GenericActions.GoToDestination(_backDoor.transform.position, this.gameObject, this);
+            return GenericActions.GoToDestination(_van, this,ItemEnum.NONE);
         }
 
         private ProcessStatusEnum GoToFrontDoor()
         {
-            return GenericActions.GoToDestination(_frontDoor.transform.position, this.gameObject, this);
+            return GoToDoor(_frontDoor);
+        }
+
+        private ProcessStatusEnum GoToBackDoor()
+        {
+            return GoToDoor(_backDoor);
+        }
+
+        private ProcessStatusEnum GoToDoor(GameObject door)
+        {
+            ProcessStatusEnum doorStatus = GenericActions.GoToDestination(door, this, ItemEnum.DOOR);
+            if (doorStatus.Equals(ProcessStatusEnum.SUCCESS))
+            {
+                door.SetActive(false);
+                return doorStatus;
+            }
+            return doorStatus;
+        }
+
+        private ProcessStatusEnum GoToItemToSteal(GameObject destinationObject, ItemEnum itemToSteal)
+        {
+            ProcessStatusEnum itemStatus = GenericActions.GoToDestination(destinationObject, this, itemToSteal);
+            if (itemStatus.Equals(ProcessStatusEnum.SUCCESS))
+            {
+                destinationObject.SetActive(false);
+                return itemStatus;
+            }
+            return itemStatus;
         }
     }
 }
