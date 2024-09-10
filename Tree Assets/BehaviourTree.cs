@@ -42,7 +42,28 @@ namespace Dawud.BT.General
         /// <returns></returns>
         public override ProcessStatusEnum Process()
         {
-            return Children[CurrentChild].Process();
+            Status = Children[CurrentChild].Process();
+            return Status;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void SetAllToDefaultValues()
+        {
+            Stack<Node> nodeStack = new Stack<Node>();
+            nodeStack.Push(this);
+            while(nodeStack.Count != 0)
+            {
+                Node nextNode = nodeStack.Pop();
+                nextNode.Status = ProcessStatusEnum.AWAIT;
+                nextNode.CurrentChild = 0;
+
+                for (int i = 0; i < nextNode.Children.Count; i++)
+                {
+                    nodeStack.Push(nextNode.Children[i]);
+                }
+            }
         }
 
         /// <summary>

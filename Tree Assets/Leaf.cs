@@ -1,7 +1,4 @@
 using Dawud.BT.Enums;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
 namespace Dawud.BT.General
 {
@@ -40,9 +37,14 @@ namespace Dawud.BT.General
         {
             if(ProcessMethod != null)
             {
-                return ProcessMethod();
+                Status = ProcessMethod();
             }
-            return ProcessStatusEnum.FAILED;
+            else
+            {
+                Status = ProcessStatusEnum.FAILED;
+            }
+
+            return Status;
         }
     }
 }

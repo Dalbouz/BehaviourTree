@@ -9,8 +9,6 @@ namespace Dawud.BT.General
     /// </summary>
     public abstract class NPCMain : MonoBehaviour
     {
-        protected ProcessStatusEnum _treeStatus = ProcessStatusEnum.RUNNING;
-
         [SerializeField] protected bool _printOutTree = default;
         [HideInInspector] public NavMeshAgent Agent = default;
         [HideInInspector] public BehaviourTree Tree = default;

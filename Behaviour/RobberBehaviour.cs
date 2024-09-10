@@ -3,6 +3,7 @@ using Dawud.BT.General;
 using UnityEngine.AI;
 using Dawud.BT.Enums;
 using Dawud.BT.Actions;
+using System;
 
 namespace Dawud.BT.Behaviour
 {
@@ -14,6 +15,7 @@ namespace Dawud.BT.Behaviour
         [SerializeField] private GameObject _diamond = default;
         [SerializeField] private GameObject _van = default;
         [SerializeField] private GameObject _backDoor = default;
+        [SerializeField] private GameObject _frontDoor = default;
         [SerializeField] BehaviourTree _tree = default;
 
         void Start()
@@ -24,6 +26,7 @@ namespace Dawud.BT.Behaviour
             Sequence steal = new Sequence("Steal something");
 
             Leaf goToBackDoor = new Leaf("Go To back door", GoToBackDoor);
+            Leaf goToFrontDoor = new Leaf("Go To Front Door", GoToFrontDoor);
             Leaf goToDiamond = new Leaf("Go To Diamond", GoToDiamond);
             Leaf goToVan = new Leaf("Go To Van", GoToVan);
 
@@ -37,14 +40,19 @@ namespace Dawud.BT.Behaviour
             {
                 _tree.PrintTree();
             }
+            _tree.Status = ProcessStatusEnum.RUNNING;
         }
 
         private void Update()
         {
-            if (_treeStatus.Equals(ProcessStatusEnum.RUNNING))
+            if (_tree.Status.Equals(ProcessStatusEnum.RUNNING))
             {
-                _treeStatus = _tree.Process();
-            } 
+                _tree.Status = _tree.Process();
+            }
+            if(_tree.Status.Equals(ProcessStatusEnum.SUCCESS) || _tree.Status.Equals(ProcessStatusEnum.FAILED))
+            {
+                _tree.SetAllToDefaultValues();
+            }
         }
 
         private ProcessStatusEnum GoToDiamond()
@@ -61,6 +69,11 @@ namespace Dawud.BT.Behaviour
         private ProcessStatusEnum GoToBackDoor()
         {
             return GenericActions.GoToDestination(_backDoor.transform.position, this.gameObject, this);
+        }
+
+        private ProcessStatusEnum GoToFrontDoor()
+        {
+            return GenericActions.GoToDestination(_frontDoor.transform.position, this.gameObject, this);
         }
     }
 }
