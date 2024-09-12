@@ -7,7 +7,6 @@ namespace Dawud.BT.General
     /// <summary>
     /// Node class for creating a Main Node(Behaviour Tree) that holds all of its children nodes.
     /// </summary>
-    /// 
     public class BehaviourTree : Node
     {
         /// <summary>
@@ -47,7 +46,7 @@ namespace Dawud.BT.General
         }
 
         /// <summary>
-        /// 
+        /// Sets all of the children nodes to Process status <see cref="ProcessStatusEnum.AWAIT"/> and sets its Current child to 0.
         /// </summary>
         public void SetAllToDefaultValues()
         {

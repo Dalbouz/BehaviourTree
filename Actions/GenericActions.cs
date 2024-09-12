@@ -1,6 +1,8 @@
 using Dawud.BT.Behaviour;
 using Dawud.BT.Enums;
 using Dawud.BT.General;
+using Dawud.BT.Misc;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Dawud.BT.Actions
@@ -61,6 +63,66 @@ namespace Dawud.BT.Actions
             }
 
             return ProcessStatusEnum.SUCCESS;
+        }
+
+        public static ItemData GetPickupableItemData(GameObject gameobject)
+        {
+            if (gameobject.TryGetComponent<ItemRoot>(out ItemRoot itemRoot)) // Try to get the component and check for null
+            {
+                if (itemRoot.Data.Pickupable)
+                    return itemRoot.Data; // Add to the list if the component exists
+            }
+            return null;
+        }
+
+        public static List<GameObject> RandomAddingPickupableItemsToList()
+        {
+            List<GameObject> list = new List<GameObject>();
+            int numbOfItemsRnd = Random.Range(1, ItemManager.Instance.PickupableItems.Count);
+            Debug.Log("Number of random Items: " + numbOfItemsRnd);
+
+            List<int> rndIndexes = new List<int>();
+            int rndIndex = 0;
+            for (int i = 0; i < numbOfItemsRnd; i++)
+            {
+                do
+                {
+                    rndIndex = Random.Range(0, ItemManager.Instance.PickupableItems.Count - 1);
+                }
+                while (rndIndexes.Contains(rndIndex));
+
+                Debug.Log("Random index: " + rndIndex);
+                rndIndexes.Add(rndIndex);
+            }
+
+            for (int i = 0; i < rndIndexes.Count; i++)
+            {
+                list.Add(ItemManager.Instance.PickupableItems[rndIndexes[i]]);
+            }
+            return list;
+        }
+
+        public static ProcessStatusEnum GoToItemToSteal(GameObject destinationObject, ItemEnum itemToSteal, NPCMain robber)
+        {
+            ProcessStatusEnum itemStatus = GoToDestination(destinationObject, robber, itemToSteal);
+            if (itemStatus.Equals(ProcessStatusEnum.SUCCESS))
+            {
+                destinationObject.transform.parent = robber.gameObject.transform;
+                return itemStatus;
+            }
+            return itemStatus;
+        }
+
+
+        public static ProcessStatusEnum GoToDoor(GameObject door, NPCMain npc)
+        {
+            ProcessStatusEnum doorStatus = GoToDestination(door, npc, ItemEnum.DOOR);
+            if (doorStatus.Equals(ProcessStatusEnum.SUCCESS))
+            {
+                door.SetActive(false);
+                return doorStatus;
+            }
+            return doorStatus;
         }
     }
 }

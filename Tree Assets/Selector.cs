@@ -3,7 +3,7 @@ using Dawud.BT.Enums;
 namespace Dawud.BT.General
 {
     /// <summary>
-    /// 
+    /// Node class that can hold multiple children nodes and if only one of them is SUCCESSFULL then the selector will return SUCCESS. It WIll stop when atleast one child of the Selector has returned SUCCESS.
     /// </summary>
     public class Selector : Node
     {
