@@ -1,4 +1,5 @@
 using Dawud.BT.General;
+using Dawud.BT.Misc;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,9 +8,9 @@ using UnityEngine;
 /// </summary>
 public class ItemManager : SingletonRoot<ItemManager>
 {
-    [SerializeField] private List<GameObject> _pickupableItems = new List<GameObject>();
+    [SerializeField] private List<ItemGeneric> _pickupableItems = new List<ItemGeneric>();
 
-    public List<GameObject> PickupableItems
+    public List<ItemGeneric> PickupableItems
     {
         get { return _pickupableItems; }
     }

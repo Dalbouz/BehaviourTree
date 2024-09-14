@@ -41,14 +41,14 @@ namespace Dawud.BT.General
         /// <returns></returns>
         public override ProcessStatusEnum Process()
         {
-            Status = Children[CurrentChild].Process();
-            return Status;
+            if (Children.Count == 0) return Status = ProcessStatusEnum.SUCCESS;
+            return Status = Children[CurrentChild].Process();
         }
 
         /// <summary>
         /// Sets all of the children nodes to Process status <see cref="ProcessStatusEnum.AWAIT"/> and sets its Current child to 0.
         /// </summary>
-        public void SetAllToDefaultValues()
+        public void SetAllNodesToDefaultValues()
         {
             Stack<Node> nodeStack = new Stack<Node>();
             nodeStack.Push(this);

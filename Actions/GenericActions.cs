@@ -13,7 +13,7 @@ namespace Dawud.BT.Actions
     public class GenericActions
     {
         /// <summary>
-        /// Sends the Agent to a location via Nav Mesh. Sets the Agents current status <see cref="AgentStatusEnum"/> and returns the current status <see cref="ProcessStatusEnum"/> of Leaf Node that called this method. This method sets the current <see cref="Node.Status"/> of the Leaf Node that called it.
+        /// Generic method that Sends the Agent to a location via Nav Mesh. Sets the Agents current status <see cref="AgentStatusEnum"/> and returns the current status <see cref="ProcessStatusEnum"/> of Leaf Node that called this method. This method sets the current <see cref="Node.Status"/> of the Leaf Node that called it. <paramref name="itemDestinaton"/> is used to make extra checks when the agent arives to the destination. The Check is performed inside <see cref="CheckItemDestination(ItemEnum, GameObject)"/>.
         /// </summary>
         /// <param name="destinationObject"></param>
         /// <param name="gameObject"></param>
@@ -35,49 +35,49 @@ namespace Dawud.BT.Actions
             else if(distanceToTarget < 2)//If the agents distance to the destination is less then 2 the agent arrived to the destination. Set the Agent status to Idle and check what item did the agent reach. Return a value depending on the item that the Agent has reached.
             {
                 npc.AgentStatus = AgentStatusEnum.IDLE;
-                return CheckItemDestination(itemDestinaton, destinationObject);
+                return ProcessStatusEnum.SUCCESS;
             }
             return ProcessStatusEnum.RUNNING;
         }
 
-
-        public static ProcessStatusEnum CheckItemDestination(ItemEnum itemDestination, GameObject gameObject)
+        /// <summary>
+        /// Generic method for checking is the Door locked. Returns <see cref="ProcessStatusEnum"/>
+        /// </summary>
+        /// <param name="doorLock"></param>
+        /// <returns></returns>
+        public static ProcessStatusEnum CheckDoorStatus(DoorLock doorLock)
         {
-            switch (itemDestination)
+            if (!doorLock.IsDoorLocked)
             {
-                case ItemEnum.NONE:
-                    return ProcessStatusEnum.SUCCESS;
-
-                case ItemEnum.DOOR:
-                    if (!gameObject.GetComponent<DoorLock>().IsDoorLocked)
-                    {
-                        return ProcessStatusEnum.SUCCESS;
-                    }
-                    else
-                    {
-                        return ProcessStatusEnum.FAILED;
-                    }
-
-                case ItemEnum.DIAMOND:
-                    return ProcessStatusEnum.SUCCESS;
+                return ProcessStatusEnum.SUCCESS;
             }
-
-            return ProcessStatusEnum.SUCCESS;
+            else
+            {
+                return ProcessStatusEnum.FAILED;
+            }
         }
 
-        public static ItemData GetPickupableItemData(GameObject gameobject)
+        /// <summary>
+        /// Generic method for getting the <see cref="ItemData"/> from a given gameobject.
+        /// </summary>
+        /// <param name="gameobject"></param>
+        /// <returns></returns>
+        public static ItemData GetItemData(GameObject gameobject)
         {
             if (gameobject.TryGetComponent<ItemRoot>(out ItemRoot itemRoot)) // Try to get the component and check for null
             {
-                if (itemRoot.Data.Pickupable)
-                    return itemRoot.Data; // Add to the list if the component exists
+                return itemRoot.Data; // Add to the list if the component exists
             }
             return null;
         }
 
-        public static List<GameObject> RandomAddingPickupableItemsToList()
+        /// <summary>
+        /// Generic method for returning a random list of pickupable items form <see cref="ItemManager.PickupableItems"/>.
+        /// </summary>
+        /// <returns></returns>
+        public static List<ItemGeneric> RandomAddingPickupableItemsToList()
         {
-            List<GameObject> list = new List<GameObject>();
+            List<ItemGeneric> list = new List<ItemGeneric>();
             int numbOfItemsRnd = Random.Range(1, ItemManager.Instance.PickupableItems.Count);
             Debug.Log("Number of random Items: " + numbOfItemsRnd);
 
@@ -102,6 +102,13 @@ namespace Dawud.BT.Actions
             return list;
         }
 
+        /// <summary>
+        /// Generic method that calls <see cref="GoToDestination(GameObject, NPCMain, ItemEnum)"/> where the destination is a given item to steal and if <see cref="ProcessStatusEnum.SUCCESS"/> ****.
+        /// </summary>
+        /// <param name="destinationObject"></param>
+        /// <param name="itemToSteal"></param>
+        /// <param name="robber"></param>
+        /// <returns></returns>
         public static ProcessStatusEnum GoToItemToSteal(GameObject destinationObject, ItemEnum itemToSteal, NPCMain robber)
         {
             ProcessStatusEnum itemStatus = GoToDestination(destinationObject, robber, itemToSteal);
@@ -113,16 +120,20 @@ namespace Dawud.BT.Actions
             return itemStatus;
         }
 
-
+        /// <summary>
+        /// Generic method that calls <see cref="GoToDestination(GameObject, NPCMain, ItemEnum)"/> where the destination is a given door. Returns the status if the agent has arrived at the destination.
+        /// </summary>
+        /// <param name="door"></param>
+        /// <param name="npc"></param>
+        /// <returns></returns>
         public static ProcessStatusEnum GoToDoor(GameObject door, NPCMain npc)
         {
-            ProcessStatusEnum doorStatus = GoToDestination(door, npc, ItemEnum.DOOR);
-            if (doorStatus.Equals(ProcessStatusEnum.SUCCESS))
+            ProcessStatusEnum status = GoToDestination(door, npc, ItemEnum.DOOR);
+            if (status.Equals(ProcessStatusEnum.SUCCESS))
             {
-                door.SetActive(false);
-                return doorStatus;
+                return status;
             }
-            return doorStatus;
+            return status;
         }
     }
 }

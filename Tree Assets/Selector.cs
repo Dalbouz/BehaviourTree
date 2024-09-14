@@ -22,26 +22,22 @@ namespace Dawud.BT.General
             ProcessStatusEnum childStatus = Children[CurrentChild].Process();
             if (childStatus.Equals(ProcessStatusEnum.RUNNING))
             {
-                Status = ProcessStatusEnum.RUNNING;
-                return Status;
+                return Status = ProcessStatusEnum.RUNNING;
             }
             if (childStatus.Equals(ProcessStatusEnum.SUCCESS))
             {
-                Status = ProcessStatusEnum.SUCCESS;
                 CurrentChild = 0;
-                return Status;
+                return Status = ProcessStatusEnum.SUCCESS;
             }
 
             CurrentChild++;
             if(CurrentChild >= Children.Count)
             {
                 CurrentChild = 0;
-                Status = ProcessStatusEnum.FAILED;
-                return Status;
+                return Status = ProcessStatusEnum.FAILED;
             }
 
-            Status = ProcessStatusEnum.RUNNING;
-            return Status;
+            return Status = ProcessStatusEnum.RUNNING;
         }
     }
 }
