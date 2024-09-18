@@ -19,7 +19,7 @@ namespace Dawud.BT.Actions
         /// <param name="gameObject"></param>
         /// <param name="npc"></param>
         /// <returns></returns>
-        public static ProcessStatusEnum GoToDestination(GameObject destinationObject, NPCMain npc, ItemEnum itemDestinaton)
+        public static ProcessStatusEnum GoToDestination(GameObject destinationObject, NPCRoot npc, ItemEnum itemDestinaton)
         {
             float distanceToTarget = Vector3.Distance(destinationObject.transform.position, npc.transform.position);
             if (npc.AgentStatus.Equals(AgentStatusEnum.IDLE))//If the agent is in idle start the SetDestination and set Agent status to Working
@@ -103,13 +103,13 @@ namespace Dawud.BT.Actions
         }
 
         /// <summary>
-        /// Generic method that calls <see cref="GoToDestination(GameObject, NPCMain, ItemEnum)"/> where the destination is a given item to steal and if <see cref="ProcessStatusEnum.SUCCESS"/> ****.
+        /// Generic method that calls <see cref="GoToDestination(GameObject, NPCRoot, ItemEnum)"/> where the destination is a given item to steal and if <see cref="ProcessStatusEnum.SUCCESS"/> ****.
         /// </summary>
         /// <param name="destinationObject"></param>
         /// <param name="itemToSteal"></param>
         /// <param name="robber"></param>
         /// <returns></returns>
-        public static ProcessStatusEnum GoToItemToSteal(GameObject destinationObject, ItemEnum itemToSteal, NPCMain robber)
+        public static ProcessStatusEnum GoToItemToSteal(GameObject destinationObject, ItemEnum itemToSteal, NPCRoot robber)
         {
             ProcessStatusEnum itemStatus = GoToDestination(destinationObject, robber, itemToSteal);
             if (itemStatus.Equals(ProcessStatusEnum.SUCCESS))
@@ -121,12 +121,12 @@ namespace Dawud.BT.Actions
         }
 
         /// <summary>
-        /// Generic method that calls <see cref="GoToDestination(GameObject, NPCMain, ItemEnum)"/> where the destination is a given door. Returns the status if the agent has arrived at the destination.
+        /// Generic method that calls <see cref="GoToDestination(GameObject, NPCRoot, ItemEnum)"/> where the destination is a given door. Returns the status if the agent has arrived at the destination.
         /// </summary>
         /// <param name="door"></param>
         /// <param name="npc"></param>
         /// <returns></returns>
-        public static ProcessStatusEnum GoToDoor(GameObject door, NPCMain npc)
+        public static ProcessStatusEnum GoToDoor(GameObject door, NPCRoot npc)
         {
             ProcessStatusEnum status = GoToDestination(door, npc, ItemEnum.DOOR);
             if (status.Equals(ProcessStatusEnum.SUCCESS))

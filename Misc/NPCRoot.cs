@@ -8,7 +8,7 @@ namespace Dawud.BT.General
     /// <summary>
     /// 
     /// </summary>
-    public abstract class NPCMain : MonoBehaviour
+    public abstract class NPCRoot : MonoBehaviour
     {
         protected BehaviourTree _tree = default;
         protected Coroutine _behaveCoroutine = default;
@@ -24,7 +24,7 @@ namespace Dawud.BT.General
             Agent = this.GetComponent<NavMeshAgent>();
             _tree = new BehaviourTree("Tree Behaviour: " + this.gameObject.name);
 
-            TreeCheckEvery = new WaitForSeconds(Random.Range(0.1f, 2));
+            TreeCheckEvery = new WaitForSeconds(Random.Range(0.1f, 1));
 
             CreateBehaviour();
 
@@ -32,24 +32,20 @@ namespace Dawud.BT.General
             {
                 _tree.PrintTree();
             }
+
+            _tree.Status = ProcessStatusEnum.AWAIT;
         }
 
-        protected virtual void Update()
-        {
-            if (_tree.Status.Equals(ProcessStatusEnum.AWAIT))
-            {
-                return;
-            }
-        }
+        protected virtual void Update() { }
 
         protected virtual void CreateBehaviour() { }
 
-        protected IEnumerator BehaveCoroutine()
+        private IEnumerator BehaveCoroutine()
         {
-            _tree.Process();
+            _tree.Status = _tree.Process();
             while (_tree.Status.Equals(ProcessStatusEnum.RUNNING))
             {
-                _tree.Process();
+                _tree.Status = _tree.Process();
                 yield return TreeCheckEvery;
             }
 
@@ -67,9 +63,17 @@ namespace Dawud.BT.General
             _behaveCoroutine = null;
         }
 
+        /// <summary>
+        /// Starts the Behaviour coroutine of the NPC.
+        /// </summary>
         public void StartBehave()
         {
             _behaveCoroutine = StartCoroutine(BehaveCoroutine());
+        }
+
+        public void PrintOutTree()
+        {
+            _tree.PrintTree();
         }
     }
 }

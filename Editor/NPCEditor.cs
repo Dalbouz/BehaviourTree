@@ -1,12 +1,11 @@
 using Dawud.BT.Behaviour;
-using Dawud.BT.General;
 using UnityEditor;
 using UnityEngine;
 
 namespace Dawud.BT.Misc
 {
     [CustomEditor(typeof(RobberBehaviour))]
-    public class NPCEditor : Editor
+    public class RobberBehaviourEditor : Editor
     {
         public override void OnInspectorGUI()
         {
@@ -17,6 +16,11 @@ namespace Dawud.BT.Misc
             if (GUILayout.Button("Start Behave"))
             {
                 npcMain.StartBehave();
+            }
+
+            if (GUILayout.Button("Print Out Tree"))
+            {
+                npcMain.PrintOutTree();
             }
         }
     }
