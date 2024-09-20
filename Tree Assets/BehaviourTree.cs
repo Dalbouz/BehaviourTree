@@ -7,7 +7,7 @@ namespace Dawud.BT.General
     /// <summary>
     /// Node class for creating a Main Node(Behaviour Tree) that holds all of its children nodes.
     /// </summary>
-    public class BehaviourTree : Node
+    public class BehaviourTree : BTNode
     {
         /// <summary>
         /// Struct that holds a node and its current level inside the Behaviour tree.
@@ -15,7 +15,7 @@ namespace Dawud.BT.General
         private struct NodeLevel
         {
             public int Level;
-            public Node node;
+            public BTNode node;
         }
 
         /// <summary>
@@ -50,11 +50,11 @@ namespace Dawud.BT.General
         /// </summary>
         public void SetAllNodesToDefaultValues()
         {
-            Stack<Node> nodeStack = new Stack<Node>();
+            Stack<BTNode> nodeStack = new Stack<BTNode>();
             nodeStack.Push(this);
             while(nodeStack.Count != 0)
             {
-                Node nextNode = nodeStack.Pop();
+                BTNode nextNode = nodeStack.Pop();
                 nextNode.Status = ProcessStatusEnum.AWAIT;
                 nextNode.CurrentChild = 0;
 
@@ -72,7 +72,7 @@ namespace Dawud.BT.General
         {
             string treePrintout = "";
             Stack<NodeLevel> nodeStack = new Stack<NodeLevel>(); //LIFO (Last in First Out)
-            Node currentNode = this;
+            BTNode currentNode = this;
             nodeStack.Push(new NodeLevel { Level = 0, node = currentNode });
 
             while (nodeStack.Count != 0)

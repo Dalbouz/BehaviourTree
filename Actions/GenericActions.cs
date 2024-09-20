@@ -13,7 +13,7 @@ namespace Dawud.BT.Actions
     public class GenericActions
     {
         /// <summary>
-        /// Generic method that Sends the Agent to a location via Nav Mesh. Sets the Agents current status <see cref="AgentStatusEnum"/> and returns the current status <see cref="ProcessStatusEnum"/> of Leaf Node that called this method. This method sets the current <see cref="Node.Status"/> of the Leaf Node that called it. <paramref name="itemDestinaton"/> is used to make extra checks when the agent arives to the destination. The Check is performed inside <see cref="CheckItemDestination(ItemEnum, GameObject)"/>.
+        /// Generic method that Sends the Agent to a location via Nav Mesh. Sets the Agents current status <see cref="AgentStatusEnum"/> and returns the current status <see cref="ProcessStatusEnum"/> of Leaf Node that called this method. This method sets the current <see cref="BTNode.Status"/> of the Leaf Node that called it. <paramref name="itemDestinaton"/> is used to make extra checks when the agent arives to the destination. The Check is performed inside <see cref="CheckItemDestination(ItemEnum, GameObject)"/>.
         /// </summary>
         /// <param name="destinationObject"></param>
         /// <param name="gameObject"></param>

@@ -5,14 +5,14 @@ namespace Dawud.BT.General
     /// <summary>
     /// Node Class that can have only one child process/Node. It Inverts anything that its child note returns.
     /// </summary>
-    public class Inverter : Node
+    public class BTInverter : BTNode
     {
-        public Inverter()
+        public BTInverter()
         {
 
         }
 
-        public Inverter (string n)
+        public BTInverter (string n)
         {
             Name = n;
         }

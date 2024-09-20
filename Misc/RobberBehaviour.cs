@@ -37,22 +37,22 @@ namespace Dawud.BT.Behaviour
         {
             int currentAddingItem = 0;
 
-            Sequence rootSeq = new Sequence("Root Sequence");
+            BTSequence rootSeq = new BTSequence("Root Sequence");
 
             foreach (ItemGeneric item in _itemsToSteal)
             {
-                Sequence stealSeq = new Sequence("Steal " + _itemsToSteal[currentAddingItem].gameObject.name + "(Sequence)");
-                Sequence checkFrontDoorStatusSeq = new Sequence("Check is Front Door Unlocked(sequence)");
-                Sequence checkBackDoorStatusSeq = new Sequence("Check is Back Door Unlocked(sequence)");
-                Selector goToDoorSel = new Selector("Go To Door(slector)");
-                Inverter hasGotMoneyInvert = new Inverter("Has got money(Inverter)");
+                BTSequence stealSeq = new BTSequence("Steal " + _itemsToSteal[currentAddingItem].gameObject.name + "(Sequence)");
+                BTSequence checkFrontDoorStatusSeq = new BTSequence("Check is Front Door Unlocked(sequence)");
+                BTSequence checkBackDoorStatusSeq = new BTSequence("Check is Back Door Unlocked(sequence)");
+                BTSelector goToDoorSel = new BTSelector("Go To Door(slector)");
+                BTInverter hasGotMoneyInvert = new BTInverter("Has got money(Inverter)");
 
-                Leaf gotMoney = new Leaf("Got Money", GotMoney);
-                Leaf checkDoorStatus = new Leaf("Check Door Status", CheckDoorStatus);
-                Leaf goToFrontDoor = new Leaf("Go To Front Door", GoToFrontDoor);
-                Leaf goToBackDoor = new Leaf("Go To back door", GoToBackDoor);
-                Leaf goToItem = new Leaf("Go To Item " + _itemsToSteal[currentAddingItem].gameObject.name, GoToItem);
-                Leaf goToVan = new Leaf("Go To Van", GoToVan);
+                BTLeaf gotMoney = new BTLeaf("Got Money", GotMoney);
+                BTLeaf checkDoorStatus = new BTLeaf("Check Door Status", CheckDoorStatus);
+                BTLeaf goToFrontDoor = new BTLeaf("Go To Front Door", GoToFrontDoor);
+                BTLeaf goToBackDoor = new BTLeaf("Go To back door", GoToBackDoor);
+                BTLeaf goToItem = new BTLeaf("Go To Item " + _itemsToSteal[currentAddingItem].gameObject.name, GoToItem);
+                BTLeaf goToVan = new BTLeaf("Go To Van", GoToVan);
 
                 checkFrontDoorStatusSeq.AddChildren(goToFrontDoor);
                 checkFrontDoorStatusSeq.AddChildren(checkDoorStatus);
@@ -116,15 +116,6 @@ namespace Dawud.BT.Behaviour
                     _itemsToSteal.Clear();
                     _currentItemStealing = -1;
                 }
-                //for (int i = 0; i < _itemsToSteal.Count; i++)
-                //{
-                //    _money += _collectedItems[i].Value;
-                //    _itemsToSteal[i].gameObject.SetActive(false);
-                //}
-
-                //_collectedItems.Clear();
-                //_itemsToSteal.Clear();
-                //_currentItemStealing = -1;
             }
             return status;
         }
@@ -147,9 +138,9 @@ namespace Dawud.BT.Behaviour
             if (doorStatus.Equals(ProcessStatusEnum.SUCCESS))
             {
                 _atCurrentDoor.GetComponent<DoorMovement>().StartMoveUpCoroutine();
-                //_atCurrentDoor.SetActive(false);
                 return doorStatus;
             }
+
             return doorStatus;
         }
     }

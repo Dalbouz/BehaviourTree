@@ -1,24 +1,33 @@
 using Dawud.BT.Enums;
+using Dawud.BT.Misc;
 
 namespace Dawud.BT.General
 {
     /// <summary>
-    /// Node class that can hold multiple children nodes and if only one of them is SUCCESSFULL then the selector will return SUCCESS. It WIll stop when atleast one child of the Selector has returned SUCCESS.
+    /// Node class that can hold multiple children nodes and if only one of them is SUCCESSFULL then the selector will return SUCCESS. It WIll stop when atleast one child of the Selector has returned SUCCESS. On the first tick of the process it will randomly shuffle up its child nodes.
     /// </summary>
-    public class Selector : Node
+    public class BTRandomSelector : BTNode
     {
-        public Selector()
+        private bool _shuffeled = false;
+
+        public BTRandomSelector()
         {
 
         }   
 
-        public Selector(string n)
+        public BTRandomSelector(string n)
         {
             Name = n;
         }
 
         public override ProcessStatusEnum Process()
         {
+            if (!_shuffeled)
+            {
+                Children.Shuffle();
+                _shuffeled = true;
+            }
+
             ProcessStatusEnum childStatus = Children[CurrentChild].Process();
             if (childStatus.Equals(ProcessStatusEnum.RUNNING))
             {
@@ -27,6 +36,7 @@ namespace Dawud.BT.General
             if (childStatus.Equals(ProcessStatusEnum.SUCCESS))
             {
                 CurrentChild = 0;
+                _shuffeled = false;
                 return Status = ProcessStatusEnum.SUCCESS;
             }
 
@@ -34,6 +44,7 @@ namespace Dawud.BT.General
             if(CurrentChild >= Children.Count)
             {
                 CurrentChild = 0;
+                _shuffeled = false;
                 return Status = ProcessStatusEnum.FAILED;
             }
 

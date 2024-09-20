@@ -5,15 +5,16 @@ namespace Dawud.BT.General
     /// <summary>
     /// Class that inherits from the Node class and can hold the Name and Action/Method of the currently running process. This is called a Leaf node and its the last node of the Behaviour tree.
     /// </summary>
-    public class Leaf : Node
+    public class BTLeaf : BTNode
     {
         public delegate ProcessStatusEnum Tick(); //One execution of the the behaviour tree. A delegate that returns the Process status and its a value called Tick.
+
         public Tick ProcessMethod = default;//Holds the current method that is getting processed.
 
         /// <summary>
         /// Empty Constructor for creating a Leaf Node.
         /// </summary>
-        public Leaf()
+        public BTLeaf()
         {
 
         }
@@ -23,10 +24,22 @@ namespace Dawud.BT.General
         /// </summary>
         /// <param name="n"></param>
         /// <param name="pm"></param>
-        public Leaf(string n, Tick pm)
+        public BTLeaf(string n, Tick pm)
         {
             Name = n;
             ProcessMethod = pm;
+        }
+
+        /// <summary>
+        /// Contructor for creating a leaf and setting the Leafs name, Method that needs to be processed and the order of the leaf inside its parent Node.
+        /// </summary>
+        /// <param name="n"></param>
+        /// <param name="pm"></param>
+        public BTLeaf(string n, Tick pm, int order)
+        {
+            Name = n;
+            ProcessMethod = pm;
+            SortOrder = order;
         }
 
         /// <summary>

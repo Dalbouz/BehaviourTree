@@ -5,13 +5,13 @@ namespace Dawud.BT.General
     /// <summary>
     /// Node class that can hold multiple Processes/Nodes and will return Success if all of its child nodes return Success. It will return Failed when one of its child processes/Nodes return Failed. When a child process return FAILED the SEQUENCE STOPS and returns FAILED.
     /// </summary>
-    public class Sequence : Node
+    public class BTSequence : BTNode
     {
         /// <summary>
         /// Constructor for creating a sequence Node with a name.
         /// </summary>
         /// <param name="n"></param>
-        public Sequence(string n)
+        public BTSequence(string n)
         {
             Name = n    ;
         }
@@ -19,7 +19,7 @@ namespace Dawud.BT.General
         /// <summary>
         /// Empty constructor for creating a Sequence node.
         /// </summary>
-        public Sequence()
+        public BTSequence()
         {
 
         }
