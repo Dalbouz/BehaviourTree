@@ -14,6 +14,7 @@ namespace Dawud.BT.Behaviour
     {
         private int _currentItemStealing = -1;
         private GameObject _atCurrentDoor = default;
+        private BTPrioritySelector _goToDoorPrioritySel = default;
 
         [SerializeField] private GameObject _van = default;
         [SerializeField] private GameObject _backDoor = default;
@@ -35,80 +36,57 @@ namespace Dawud.BT.Behaviour
 
         protected override void CreateBehaviour()
         {
-            int currentAddingItem = 0;
+            BTRepeatedSequence stealSeq = new BTRepeatedSequence("Steal (Repeated Sequence: " + _itemsToSteal.Count + ")", _itemsToSteal.Count);
+            BTInverter hasGotMoneyInvert = new BTInverter("Has got money(Inverter)");
+            BTSequence checkFrontDoorStatusSeq = new BTSequence("Check is Front Door Unlocked(sequence)", 1);
+            BTSequence checkBackDoorStatusSeq = new BTSequence("Check is Back Door Unlocked(sequence)", 2);
+            _goToDoorPrioritySel = new BTPrioritySelector("Go To Door(Priority slector)");
+            BTSequence stealItemSeq = new BTSequence("Steal item(Sequence)");
 
-            BTSequence rootSeq = new BTSequence("Root Sequence");
+            BTLeaf gotMoney = new BTLeaf("Got Money", GotMoney);
+            BTLeaf checkDoorStatus = new BTLeaf("Check Door Status", CheckDoorStatus);
+            BTLeaf goToFrontDoor = new BTLeaf("Go To Front Door", GoToFrontDoor);
+            BTLeaf goToBackDoor = new BTLeaf("Go To back door", GoToBackDoor);
+            BTLeaf goToItem = new BTLeaf("Go To Item", GoToItem);
+            BTLeaf stealItem = new BTLeaf("Steal Item ", StealItem);
+            BTLeaf goToVan = new BTLeaf("Go To Van", GoToVan);
 
-            foreach (ItemGeneric item in _itemsToSteal)
+            hasGotMoneyInvert.AddChildren(gotMoney);
+
+            checkFrontDoorStatusSeq.AddChildren(goToFrontDoor);
+            checkFrontDoorStatusSeq.AddChildren(checkDoorStatus);
+            checkBackDoorStatusSeq.AddChildren(goToBackDoor);
+            checkBackDoorStatusSeq.AddChildren(checkDoorStatus);
+
+            _goToDoorPrioritySel.AddChildren(checkFrontDoorStatusSeq);
+            _goToDoorPrioritySel.AddChildren(checkBackDoorStatusSeq);
+
+            stealItemSeq.AddChildren(goToItem);
+            stealItemSeq.AddChildren(stealItem);
+
+            stealSeq.AddChildren(hasGotMoneyInvert);
+            stealSeq.AddChildren(_goToDoorPrioritySel);
+            stealSeq.AddChildren(stealItemSeq);
+            stealSeq.AddChildren(goToVan);
+
+            if (_tree.Children.Count <= 0)
             {
-                BTSequence stealSeq = new BTSequence("Steal " + _itemsToSteal[currentAddingItem].gameObject.name + "(Sequence)");
-                BTSequence checkFrontDoorStatusSeq = new BTSequence("Check is Front Door Unlocked(sequence)");
-                BTSequence checkBackDoorStatusSeq = new BTSequence("Check is Back Door Unlocked(sequence)");
-                BTSequence stealItemSeq = new BTSequence("Steal item: " + _itemsToSteal[currentAddingItem].gameObject.name + "(Sequence)");
-                BTSelector goToDoorSel = new BTSelector("Go To Door(slector)");
-                BTInverter hasGotMoneyInvert = new BTInverter("Has got money(Inverter)");
-
-                BTLeaf gotMoney = new BTLeaf("Got Money", GotMoney);
-                BTLeaf checkDoorStatus = new BTLeaf("Check Door Status", CheckDoorStatus);
-                BTLeaf goToFrontDoor = new BTLeaf("Go To Front Door", GoToFrontDoor);
-                BTLeaf goToBackDoor = new BTLeaf("Go To back door", GoToBackDoor);
-                BTLeaf goToItem = new BTLeaf("Go To Item " + _itemsToSteal[currentAddingItem].gameObject.name, GoToItem);
-                BTLeaf stealItem = new BTLeaf("Steal Item " + _itemsToSteal[currentAddingItem].gameObject.name, StealItem);
-                BTLeaf goToVan = new BTLeaf("Go To Van", GoToVan);
-
-                checkFrontDoorStatusSeq.AddChildren(goToFrontDoor);
-                checkFrontDoorStatusSeq.AddChildren(checkDoorStatus);
-                checkBackDoorStatusSeq.AddChildren(goToBackDoor);
-                checkBackDoorStatusSeq.AddChildren(checkDoorStatus);
-
-                goToDoorSel.AddChildren(checkFrontDoorStatusSeq);
-                goToDoorSel.AddChildren(checkBackDoorStatusSeq);
-
-                stealItemSeq.AddChildren(goToItem);
-                stealItemSeq.AddChildren(stealItem);
-
-                hasGotMoneyInvert.AddChildren(gotMoney);
-
-                stealSeq.AddChildren(hasGotMoneyInvert);
-                stealSeq.AddChildren(goToDoorSel);
-                stealSeq.AddChildren(stealItemSeq);
-                stealSeq.AddChildren(goToVan);
-
-                rootSeq.AddChildren(stealSeq);
-
-                currentAddingItem++;
+                _tree.AddChildren(stealSeq);
             }
-            _tree.AddChildren(rootSeq);
         }
 
         private ProcessStatusEnum GotMoney()
         {
-            if(_money >= _amountOfMoneyNeeded)
+            if (_money >= _amountOfMoneyNeeded)
             {
                 return ProcessStatusEnum.SUCCESS;
             }
             return ProcessStatusEnum.FAILED;
         }
 
-        //private ProcessStatusEnum GoToAndStealItem()
-        //{
-        //    ProcessStatusEnum status = GenericActions.GoToDestinationAndSteal(_itemsToSteal[_currentItemStealing + 1].gameObject, _itemsToSteal[_currentItemStealing + 1].Data.Type, this);
-        //    if (status.Equals(ProcessStatusEnum.SUCCESS))
-        //    {
-        //        ItemData id = GenericActions.GetItemData(_itemsToSteal[_currentItemStealing + 1].gameObject);
-        //        if (id != null && id.Pickupable)
-        //        {
-        //            _collectedItems.Add(id); // Add to the list if the component exists
-        //        }
-
-        //        _currentItemStealing++;
-        //    }
-        //    return status;
-        //}
-
         private ProcessStatusEnum GoToItem()
         {
-            return GenericActions.GoToDestination(_itemsToSteal[_currentItemStealing + 1].gameObject, this, _itemsToSteal[_currentItemStealing + 1].Data.Type);
+            return GenericActions.GoToDestination(_itemsToSteal[_currentItemStealing + 1].gameObject, this);
         }
 
         private ProcessStatusEnum StealItem()
@@ -130,14 +108,14 @@ namespace Dawud.BT.Behaviour
 
         private ProcessStatusEnum GoToVan()
         {
-            ProcessStatusEnum status = GenericActions.GoToDestination(_van, this, ItemEnum.VAN);
+            ProcessStatusEnum status = GenericActions.GoToDestination(_van, this);
             if (status.Equals(ProcessStatusEnum.SUCCESS))
             {
                 _money += _collectedItems[_currentItemStealing].Value;
                 _itemsToSteal[_currentItemStealing].gameObject.SetActive(false);
                 _itemsToSteal[_currentItemStealing].gameObject.transform.parent = null;
 
-                if(_currentItemStealing + 1 >= _itemsToSteal.Count)
+                if (_currentItemStealing + 1 >= _itemsToSteal.Count)
                 {
                     _collectedItems.Clear();
                     _itemsToSteal.Clear();
@@ -164,11 +142,19 @@ namespace Dawud.BT.Behaviour
             ProcessStatusEnum doorStatus = GenericActions.CheckDoorStatus(_atCurrentDoor.GetComponent<DoorLock>());
             if (doorStatus.Equals(ProcessStatusEnum.SUCCESS))
             {
-                _atCurrentDoor.GetComponent<DoorMovement>().StartMoveUpCoroutine();
+                if(_goToDoorPrioritySel.Children[_goToDoorPrioritySel.CurrentChild].SortOrder != 1) //change the priority so that the unlocked door is the first one to go through.
+                {
+                    foreach (var item in _goToDoorPrioritySel.Children)
+                    {
+                        item.SortOrder += 1;
+                    }
+                    _goToDoorPrioritySel.Children[_goToDoorPrioritySel.CurrentChild].SortOrder = 1;
+                }
+                //_atCurrentDoor.GetComponent<DoorMovement>().StartMoveUpCoroutine();
+                _atCurrentDoor.SetActive(false);
                 _atCurrentDoor = null;
                 return doorStatus;
             }
-
             _atCurrentDoor = null;
             return doorStatus;
         }

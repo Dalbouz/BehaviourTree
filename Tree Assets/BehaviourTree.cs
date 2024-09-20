@@ -57,6 +57,7 @@ namespace Dawud.BT.General
                 BTNode nextNode = nodeStack.Pop();
                 nextNode.Status = ProcessStatusEnum.AWAIT;
                 nextNode.CurrentChild = 0;
+                nextNode.SortOrder = 0;
 
                 for (int i = 0; i < nextNode.Children.Count; i++)
                 {

@@ -68,6 +68,7 @@ namespace Dawud.BT.General
         /// </summary>
         public void StartBehave()
         {
+            KillBehaveCoroutine();
             _behaveCoroutine = StartCoroutine(BehaveCoroutine());
         }
 

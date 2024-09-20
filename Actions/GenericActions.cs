@@ -19,7 +19,7 @@ namespace Dawud.BT.Actions
         /// <param name="gameObject"></param>
         /// <param name="npc"></param>
         /// <returns></returns>
-        public static ProcessStatusEnum GoToDestination(GameObject destinationObject, NPCRoot npc, ItemEnum itemDestinaton)
+        public static ProcessStatusEnum GoToDestination(GameObject destinationObject, NPCRoot npc)
         {
             float distanceToTarget = Vector3.Distance(destinationObject.transform.position, npc.transform.position);
             if (npc.AgentStatus.Equals(AgentStatusEnum.IDLE))//If the agent is in idle start the SetDestination and set Agent status to Working
@@ -78,7 +78,7 @@ namespace Dawud.BT.Actions
         public static List<ItemGeneric> RandomAddingPickupableItemsToList()
         {
             List<ItemGeneric> list = new List<ItemGeneric>();
-            int numbOfItemsRnd = Random.Range(1, ItemManager.Instance.PickupableItems.Count);
+            int numbOfItemsRnd = Random.Range(1, ItemManager.Instance.PickupableItems.Count + 1);
             Debug.Log("Number of random Items: " + numbOfItemsRnd);
 
             List<int> rndIndexes = new List<int>();
@@ -87,7 +87,7 @@ namespace Dawud.BT.Actions
             {
                 do
                 {
-                    rndIndex = Random.Range(0, ItemManager.Instance.PickupableItems.Count - 1);
+                    rndIndex = Random.Range(0, ItemManager.Instance.PickupableItems.Count);
                 }
                 while (rndIndexes.Contains(rndIndex));
 
@@ -111,7 +111,7 @@ namespace Dawud.BT.Actions
         /// <returns></returns>
         public static ProcessStatusEnum GoToDestinationAndSteal(GameObject destinationObject, ItemEnum itemToSteal, NPCRoot robber)
         {
-            ProcessStatusEnum itemStatus = GoToDestination(destinationObject, robber, itemToSteal);
+            ProcessStatusEnum itemStatus = GoToDestination(destinationObject, robber);
             if (itemStatus.Equals(ProcessStatusEnum.SUCCESS))
             {
                 destinationObject.transform.parent = robber.gameObject.transform;
@@ -146,7 +146,7 @@ namespace Dawud.BT.Actions
         /// <returns></returns>
         public static ProcessStatusEnum GoToDoor(GameObject door, NPCRoot npc)
         {
-            ProcessStatusEnum status = GoToDestination(door, npc, ItemEnum.DOOR);
+            ProcessStatusEnum status = GoToDestination(door, npc);
             if (status.Equals(ProcessStatusEnum.SUCCESS))
             {
                 return status;

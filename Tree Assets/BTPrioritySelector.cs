@@ -5,12 +5,12 @@ namespace Dawud.BT.General
     /// <summary>
     /// Node class that can hold multiple children nodes and if only one of them is SUCCESSFULL then the selector will return SUCCESS. It WIll stop when atleast one child of the Selector has returned SUCCESS. This has a priorty sorting algorithm, so the created Nodes inside the Children list need to have a given sorting order (int) so that it can sort out the child nodes into the correct order for execution.
     /// </summary>
-    public class BTPioritySelector : BTNode
+    public class BTPrioritySelector : BTNode
     {
         private BTNode[] _nodeArray = default;
         private bool _ordered = false;
 
-        public BTPioritySelector()
+        public BTPrioritySelector()
         {
 
         }
@@ -19,7 +19,7 @@ namespace Dawud.BT.General
         /// 
         /// </summary>
         /// <param name="n"></param>
-        public BTPioritySelector(string n)
+        public BTPrioritySelector(string n)
         {
             Name = n;
         }
