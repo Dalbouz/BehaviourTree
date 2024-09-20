@@ -44,6 +44,7 @@ namespace Dawud.BT.Behaviour
                 BTSequence stealSeq = new BTSequence("Steal " + _itemsToSteal[currentAddingItem].gameObject.name + "(Sequence)");
                 BTSequence checkFrontDoorStatusSeq = new BTSequence("Check is Front Door Unlocked(sequence)");
                 BTSequence checkBackDoorStatusSeq = new BTSequence("Check is Back Door Unlocked(sequence)");
+                BTSequence stealItemSeq = new BTSequence("Steal item: " + _itemsToSteal[currentAddingItem].gameObject.name + "(Sequence)");
                 BTSelector goToDoorSel = new BTSelector("Go To Door(slector)");
                 BTInverter hasGotMoneyInvert = new BTInverter("Has got money(Inverter)");
 
@@ -52,6 +53,7 @@ namespace Dawud.BT.Behaviour
                 BTLeaf goToFrontDoor = new BTLeaf("Go To Front Door", GoToFrontDoor);
                 BTLeaf goToBackDoor = new BTLeaf("Go To back door", GoToBackDoor);
                 BTLeaf goToItem = new BTLeaf("Go To Item " + _itemsToSteal[currentAddingItem].gameObject.name, GoToItem);
+                BTLeaf stealItem = new BTLeaf("Steal Item " + _itemsToSteal[currentAddingItem].gameObject.name, StealItem);
                 BTLeaf goToVan = new BTLeaf("Go To Van", GoToVan);
 
                 checkFrontDoorStatusSeq.AddChildren(goToFrontDoor);
@@ -62,11 +64,14 @@ namespace Dawud.BT.Behaviour
                 goToDoorSel.AddChildren(checkFrontDoorStatusSeq);
                 goToDoorSel.AddChildren(checkBackDoorStatusSeq);
 
+                stealItemSeq.AddChildren(goToItem);
+                stealItemSeq.AddChildren(stealItem);
+
                 hasGotMoneyInvert.AddChildren(gotMoney);
 
                 stealSeq.AddChildren(hasGotMoneyInvert);
                 stealSeq.AddChildren(goToDoorSel);
-                stealSeq.AddChildren(goToItem);
+                stealSeq.AddChildren(stealItemSeq);
                 stealSeq.AddChildren(goToVan);
 
                 rootSeq.AddChildren(stealSeq);
@@ -85,9 +90,31 @@ namespace Dawud.BT.Behaviour
             return ProcessStatusEnum.FAILED;
         }
 
+        //private ProcessStatusEnum GoToAndStealItem()
+        //{
+        //    ProcessStatusEnum status = GenericActions.GoToDestinationAndSteal(_itemsToSteal[_currentItemStealing + 1].gameObject, _itemsToSteal[_currentItemStealing + 1].Data.Type, this);
+        //    if (status.Equals(ProcessStatusEnum.SUCCESS))
+        //    {
+        //        ItemData id = GenericActions.GetItemData(_itemsToSteal[_currentItemStealing + 1].gameObject);
+        //        if (id != null && id.Pickupable)
+        //        {
+        //            _collectedItems.Add(id); // Add to the list if the component exists
+        //        }
+
+        //        _currentItemStealing++;
+        //    }
+        //    return status;
+        //}
+
         private ProcessStatusEnum GoToItem()
         {
-            ProcessStatusEnum status = GenericActions.GoToItemToSteal(_itemsToSteal[_currentItemStealing + 1].gameObject, _itemsToSteal[_currentItemStealing + 1].Data.Type, this);
+            return GenericActions.GoToDestination(_itemsToSteal[_currentItemStealing + 1].gameObject, this, _itemsToSteal[_currentItemStealing + 1].Data.Type);
+        }
+
+        private ProcessStatusEnum StealItem()
+        {
+            ProcessStatusEnum status = GenericActions.StealItem(this, _itemsToSteal[_currentItemStealing + 1].gameObject);
+
             if (status.Equals(ProcessStatusEnum.SUCCESS))
             {
                 ItemData id = GenericActions.GetItemData(_itemsToSteal[_currentItemStealing + 1].gameObject);
@@ -138,9 +165,11 @@ namespace Dawud.BT.Behaviour
             if (doorStatus.Equals(ProcessStatusEnum.SUCCESS))
             {
                 _atCurrentDoor.GetComponent<DoorMovement>().StartMoveUpCoroutine();
+                _atCurrentDoor = null;
                 return doorStatus;
             }
 
+            _atCurrentDoor = null;
             return doorStatus;
         }
     }

@@ -15,10 +15,13 @@ namespace Dawud.BT.General
 
         }
 
-        public BTPioritySelector(string n, int order)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="n"></param>
+        public BTPioritySelector(string n)
         {
             Name = n;
-            SortOrder = order;
         }
 
         /// <summary>

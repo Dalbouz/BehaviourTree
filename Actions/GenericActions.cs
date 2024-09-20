@@ -109,7 +109,7 @@ namespace Dawud.BT.Actions
         /// <param name="itemToSteal"></param>
         /// <param name="robber"></param>
         /// <returns></returns>
-        public static ProcessStatusEnum GoToItemToSteal(GameObject destinationObject, ItemEnum itemToSteal, NPCRoot robber)
+        public static ProcessStatusEnum GoToDestinationAndSteal(GameObject destinationObject, ItemEnum itemToSteal, NPCRoot robber)
         {
             ProcessStatusEnum itemStatus = GoToDestination(destinationObject, robber, itemToSteal);
             if (itemStatus.Equals(ProcessStatusEnum.SUCCESS))
@@ -118,6 +118,24 @@ namespace Dawud.BT.Actions
                 return itemStatus;
             }
             return itemStatus;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="npc"></param>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        public static ProcessStatusEnum StealItem(NPCRoot npc, GameObject item)
+        {
+            float distance = Vector3.Distance(npc.transform.position, item.transform.position);
+
+            if(distance <= 2)
+            {
+                item.transform.parent = npc.gameObject.transform;
+                return ProcessStatusEnum.SUCCESS;
+            }
+            return ProcessStatusEnum.FAILED;
         }
 
         /// <summary>
