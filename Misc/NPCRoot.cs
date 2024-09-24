@@ -26,7 +26,7 @@ namespace Dawud.BT.General
 
             TreeCheckEvery = new WaitForSeconds(Random.Range(0.1f, 1));
 
-            CreateBehaviour();
+            CreateBehavior();
 
             if (_printOutTree)
             {
@@ -38,7 +38,7 @@ namespace Dawud.BT.General
 
         protected virtual void Update() { }
 
-        protected virtual void CreateBehaviour() { }
+        protected virtual void CreateBehavior() { }
 
         private IEnumerator BehaveCoroutine()
         {

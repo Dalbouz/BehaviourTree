@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Dawud.BT.Behaviour
+namespace Dawud.BT.Behavior
 {
     /// <summary>
     /// 

@@ -21,7 +21,7 @@ namespace Dawud.BT.General
         }
 
         /// <summary>
-        /// 
+        /// Constructor for creating a repeated sequence Node.
         /// </summary>
         /// <param name="n"></param>
         /// <param name="numberOfRepetitions"></param>
@@ -39,9 +39,8 @@ namespace Dawud.BT.General
 
         }
 
-        //TODO (Rewrite this summary so it fits the process)
         /// <summary>
-        /// The Process Method that "loops" over its child Nodes/Processes and starts the Process methods. If the current active node of the sequence is in running status it will return running. If the current active running node(child of the sequence that is running) return Failed, the sequence will return Failed. If the current active node returns Success it will index up to the next current child and start the Process method again. When it reaches the end of the List the Sequence returns Success.
+        /// The Process Method that "loops" over its child Nodes/Processes and starts the Process methods. If the current active node of the sequence is in running status it will return running. If the current active running node(child of the sequence that is running) return Failed, the sequence will return Failed. The Sequence will return Success only if it has run this: <see cref="_numberOfRepetitions"/> many times and the child nodes never returned FAILED (each node on every run returned SUCCESS).
         /// </summary>
         /// <returns></returns>
         public override ProcessStatusEnum Process()

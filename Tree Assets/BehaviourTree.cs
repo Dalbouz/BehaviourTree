@@ -10,7 +10,7 @@ namespace Dawud.BT.General
     public class BehaviourTree : BTNode
     {
         /// <summary>
-        /// Struct that holds a node and its current level inside the Behaviour tree.
+        /// Struct that holds a node and its current level inside the Behavior tree.
         /// </summary>
         private struct NodeLevel
         {
@@ -19,7 +19,7 @@ namespace Dawud.BT.General
         }
 
         /// <summary>
-        /// Constructor for the behaviour tree class that sets the name of the node.
+        /// Constructor for the behavior tree class that sets the name of the node.
         /// </summary>
         public BehaviourTree()
         {
@@ -27,7 +27,7 @@ namespace Dawud.BT.General
         }
 
         /// <summary>
-        /// Constructor for the behaviour tree class that can set the name of the node.
+        /// Constructor for the behavior tree class that can set the name of the node.
         /// </summary>
         /// <param name="n"></param>
         public BehaviourTree(string n)
@@ -67,7 +67,7 @@ namespace Dawud.BT.General
         }
 
         /// <summary>
-        /// Method for debug loging of the Behaviour tree.
+        /// Method for debug logging of the Behavior tree.
         /// </summary>
         public void PrintTree()
         {

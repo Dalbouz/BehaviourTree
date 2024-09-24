@@ -1,17 +1,17 @@
-using Dawud.BT.Behaviour;
+using Dawud.BT.Behavior;
 using UnityEditor;
 using UnityEngine;
 
 namespace Dawud.BT.Misc
 {
-    [CustomEditor(typeof(RobberBehaviour))]
+    [CustomEditor(typeof(RobberBehavior))]
     public class RobberBehaviourEditor : Editor
     {
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
 
-            RobberBehaviour npcMain = (RobberBehaviour)target;
+            RobberBehavior npcMain = (RobberBehavior)target;
 
             if (GUILayout.Button("Start Behave"))
             {

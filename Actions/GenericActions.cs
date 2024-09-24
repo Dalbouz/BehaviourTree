@@ -1,4 +1,4 @@
-using Dawud.BT.Behaviour;
+using Dawud.BT.Behavior;
 using Dawud.BT.Enums;
 using Dawud.BT.General;
 using Dawud.BT.Misc;
@@ -13,10 +13,9 @@ namespace Dawud.BT.Actions
     public class GenericActions
     {
         /// <summary>
-        /// Generic method that Sends the Agent to a location via Nav Mesh. Sets the Agents current status <see cref="AgentStatusEnum"/> and returns the current status <see cref="ProcessStatusEnum"/> of Leaf Node that called this method. This method sets the current <see cref="BTNode.Status"/> of the Leaf Node that called it. <paramref name="itemDestinaton"/> is used to make extra checks when the agent arives to the destination. The Check is performed inside <see cref="CheckItemDestination(ItemEnum, GameObject)"/>.
+        /// Generic method that Sends the Agent to a location via Nav Mesh. Sets the Agents current status <see cref="AgentStatusEnum"/> and returns the current status <see cref="ProcessStatusEnum"/> of Leaf Node that called this method. This method sets the current <see cref="BTNode.Status"/> of the Leaf Node that called it.
         /// </summary>
         /// <param name="destinationObject"></param>
-        /// <param name="gameObject"></param>
         /// <param name="npc"></param>
         /// <returns></returns>
         public static ProcessStatusEnum GoToDestination(GameObject destinationObject, NPCRoot npc)
@@ -27,7 +26,7 @@ namespace Dawud.BT.Actions
                 npc.Agent.SetDestination(destinationObject.transform.position);
                 npc.AgentStatus = AgentStatusEnum.WORKING;
             }
-            else if(Vector3.Distance(npc.Agent.pathEndPosition, destinationObject.transform.position) >= 2)//If the agents distance betwen its endpath and the desitnation is higher or equal then 2 the agent has failed to get to the destination
+            else if(Vector3.Distance(npc.Agent.pathEndPosition, destinationObject.transform.position) >= 2)//If the agents distance between its end path and the destination is higher or equal then 2 the agent has failed to get to the destination
             {
                 npc.AgentStatus = AgentStatusEnum.IDLE;
                 return ProcessStatusEnum.FAILED;
@@ -72,7 +71,7 @@ namespace Dawud.BT.Actions
         }
 
         /// <summary>
-        /// Generic method for returning a random list of pickupable items form <see cref="ItemManager.PickupableItems"/>.
+        /// Generic method for returning a random list of pick-up items form <see cref="ItemManager.PickupableItems"/>.
         /// </summary>
         /// <returns></returns>
         public static List<ItemGeneric> RandomAddingPickupableItemsToList()
@@ -103,25 +102,7 @@ namespace Dawud.BT.Actions
         }
 
         /// <summary>
-        /// Generic method that calls <see cref="GoToDestination(GameObject, NPCRoot, ItemEnum)"/> where the destination is a given item to steal and if <see cref="ProcessStatusEnum.SUCCESS"/> ****.
-        /// </summary>
-        /// <param name="destinationObject"></param>
-        /// <param name="itemToSteal"></param>
-        /// <param name="robber"></param>
-        /// <returns></returns>
-        public static ProcessStatusEnum GoToDestinationAndSteal(GameObject destinationObject, ItemEnum itemToSteal, NPCRoot robber)
-        {
-            ProcessStatusEnum itemStatus = GoToDestination(destinationObject, robber);
-            if (itemStatus.Equals(ProcessStatusEnum.SUCCESS))
-            {
-                destinationObject.transform.parent = robber.gameObject.transform;
-                return itemStatus;
-            }
-            return itemStatus;
-        }
-
-        /// <summary>
-        /// 
+        /// Set the <paramref name="item"/> gameobject as a child of the <paramref name="npc"/> gameobject. Return SUCCESS or FAILED.
         /// </summary>
         /// <param name="npc"></param>
         /// <param name="item"></param>
@@ -136,22 +117,6 @@ namespace Dawud.BT.Actions
                 return ProcessStatusEnum.SUCCESS;
             }
             return ProcessStatusEnum.FAILED;
-        }
-
-        /// <summary>
-        /// Generic method that calls <see cref="GoToDestination(GameObject, NPCRoot, ItemEnum)"/> where the destination is a given door. Returns the status if the agent has arrived at the destination.
-        /// </summary>
-        /// <param name="door"></param>
-        /// <param name="npc"></param>
-        /// <returns></returns>
-        public static ProcessStatusEnum GoToDoor(GameObject door, NPCRoot npc)
-        {
-            ProcessStatusEnum status = GoToDestination(door, npc);
-            if (status.Equals(ProcessStatusEnum.SUCCESS))
-            {
-                return status;
-            }
-            return status;
         }
     }
 }

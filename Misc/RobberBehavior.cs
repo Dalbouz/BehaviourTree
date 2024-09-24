@@ -5,12 +5,12 @@ using Dawud.BT.Actions;
 using System.Collections.Generic;
 using Dawud.BT.Misc;
 
-namespace Dawud.BT.Behaviour
+namespace Dawud.BT.Behavior
 {
     /// <summary>
     /// 
     /// </summary>
-    public class RobberBehaviour : NPCRoot
+    public class RobberBehavior : NPCRoot
     {
         private int _currentItemStealing = -1;
         private GameObject _atCurrentDoor = default;
@@ -34,13 +34,13 @@ namespace Dawud.BT.Behaviour
             base.Start();
         }
 
-        protected override void CreateBehaviour()
+        protected override void CreateBehavior()
         {
             BTRepeatedSequence stealSeq = new BTRepeatedSequence("Steal (Repeated Sequence: " + _itemsToSteal.Count + ")", _itemsToSteal.Count);
             BTInverter hasGotMoneyInvert = new BTInverter("Has got money(Inverter)");
             BTSequence checkFrontDoorStatusSeq = new BTSequence("Check is Front Door Unlocked(sequence)", 1);
             BTSequence checkBackDoorStatusSeq = new BTSequence("Check is Back Door Unlocked(sequence)", 2);
-            _goToDoorPrioritySel = new BTPrioritySelector("Go To Door(Priority slector)");
+            _goToDoorPrioritySel = new BTPrioritySelector("Go To Door(Priority selector)");
             BTSequence stealItemSeq = new BTSequence("Steal item(Sequence)");
 
             BTLeaf gotMoney = new BTLeaf("Got Money", GotMoney);
@@ -128,27 +128,28 @@ namespace Dawud.BT.Behaviour
         private ProcessStatusEnum GoToFrontDoor()
         {
             _atCurrentDoor = _frontDoor;
-            return GenericActions.GoToDoor(_frontDoor, this);
+            return GenericActions.GoToDestination(_frontDoor, this);
         }
 
         private ProcessStatusEnum GoToBackDoor()
         {
             _atCurrentDoor = _backDoor;
-            return GenericActions.GoToDoor(_backDoor, this);
+            return GenericActions.GoToDestination(_backDoor, this);
         }
 
         private ProcessStatusEnum CheckDoorStatus()
         {
             ProcessStatusEnum doorStatus = GenericActions.CheckDoorStatus(_atCurrentDoor.GetComponent<DoorLock>());
-            if (doorStatus.Equals(ProcessStatusEnum.SUCCESS))
+
+            if (doorStatus.Equals(ProcessStatusEnum.SUCCESS))//if the door is unlocked, it will set that door to be no. 1 priority.
             {
                 if(_goToDoorPrioritySel.Children[_goToDoorPrioritySel.CurrentChild].SortOrder != 1) //change the priority so that the unlocked door is the first one to go through.
                 {
                     foreach (var item in _goToDoorPrioritySel.Children)
                     {
-                        item.SortOrder += 1;
+                        item.SortOrder += 1;//Set every Node to one priority higher
                     }
-                    _goToDoorPrioritySel.Children[_goToDoorPrioritySel.CurrentChild].SortOrder = 1;
+                    _goToDoorPrioritySel.Children[_goToDoorPrioritySel.CurrentChild].SortOrder = 1;//Next set the current door that returned SUCCESS to no.1 priority
                 }
                 //_atCurrentDoor.GetComponent<DoorMovement>().StartMoveUpCoroutine();
                 _atCurrentDoor.SetActive(false);

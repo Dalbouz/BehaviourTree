@@ -20,6 +20,10 @@ namespace Dawud.BT.General
             Name = n;
         }
 
+        /// <summary>
+        /// On the first time the Process is run it will shuffle its child nodes. It Returns SUCCESS when one of the child Nodes return SUCCESS.
+        /// </summary>
+        /// <returns></returns>
         public override ProcessStatusEnum Process()
         {
             if (!_shuffeled)
