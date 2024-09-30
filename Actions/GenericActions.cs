@@ -15,18 +15,18 @@ namespace Dawud.BT.Actions
         /// <summary>
         /// Generic method that Sends the Agent to a location via Nav Mesh. Sets the Agents current status <see cref="AgentStatusEnum"/> and returns the current status <see cref="ProcessStatusEnum"/> of Leaf Node that called this method. This method sets the current <see cref="BTNode.Status"/> of the Leaf Node that called it.
         /// </summary>
-        /// <param name="destinationObject"></param>
+        /// <param name="destination"></param>
         /// <param name="npc"></param>
         /// <returns></returns>
-        public static ProcessStatusEnum GoToDestination(GameObject destinationObject, NPCRoot npc)
+        public static ProcessStatusEnum GoToDestination(Vector3 destination, NPCRoot npc)
         {
-            float distanceToTarget = Vector3.Distance(destinationObject.transform.position, npc.transform.position);
+            float distanceToTarget = Vector3.Distance(destination, npc.transform.position);
             if (npc.AgentStatus.Equals(AgentStatusEnum.IDLE))//If the agent is in idle start the SetDestination and set Agent status to Working
             {
-                npc.Agent.SetDestination(destinationObject.transform.position);
+                npc.Agent.SetDestination(destination);
                 npc.AgentStatus = AgentStatusEnum.WORKING;
             }
-            else if(Vector3.Distance(npc.Agent.pathEndPosition, destinationObject.transform.position) >= 2)//If the agents distance between its end path and the destination is higher or equal then 2 the agent has failed to get to the destination
+            else if(Vector3.Distance(npc.Agent.pathEndPosition, destination) >= 2)//If the agents distance between its end path and the destination is higher or equal then 2 the agent has failed to get to the destination
             {
                 npc.AgentStatus = AgentStatusEnum.IDLE;
                 return ProcessStatusEnum.FAILED;

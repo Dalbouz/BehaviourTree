@@ -5,9 +5,9 @@ using UnityEngine;
 namespace Dawud.BT.General
 {
     /// <summary>
-    /// Node class for creating a Main Node(Behaviour Tree) that holds all of its children nodes.
+    /// Node class for creating a Main Node(Behavior Tree) that holds all of its children nodes.
     /// </summary>
-    public class BehaviourTree : BTNode
+    public class BehaviorTree : BTNode
     {
         /// <summary>
         /// Struct that holds a node and its current level inside the Behavior tree.
@@ -21,7 +21,7 @@ namespace Dawud.BT.General
         /// <summary>
         /// Constructor for the behavior tree class that sets the name of the node.
         /// </summary>
-        public BehaviourTree()
+        public BehaviorTree()
         {
             Name = "Tree";
         }
@@ -30,7 +30,7 @@ namespace Dawud.BT.General
         /// Constructor for the behavior tree class that can set the name of the node.
         /// </summary>
         /// <param name="n"></param>
-        public BehaviourTree(string n)
+        public BehaviorTree(string n)
         {
             Name = n;
         }
@@ -43,6 +43,15 @@ namespace Dawud.BT.General
         {
             if (Children.Count == 0) return Status = ProcessStatusEnum.SUCCESS;
             return Status = Children[CurrentChild].Process();
+        }
+
+        /// <summary>
+        /// Use to jump to another child of the Behavior tree caused by some other event.
+        /// </summary>
+        /// <param name="nodeIndex"></param>
+        public void JumpToNode(int nodeIndex)
+        {
+            CurrentChild = nodeIndex;
         }
 
         /// <summary>

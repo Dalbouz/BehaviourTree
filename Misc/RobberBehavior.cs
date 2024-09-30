@@ -13,21 +13,21 @@ namespace Dawud.BT.Behavior
     public class RobberBehavior : NPCRoot
     {
         private int _currentItemStealing = -1;
-        private GameObject _atCurrentDoor = default;
+        private GameObject _usingDoor = default;
         private BTPrioritySelector _goToDoorPrioritySel = default;
+        private BTRepeatNodeFromIndex _repeateRunAwaySeq = default;
 
         [SerializeField] private GameObject _van = default;
         [SerializeField] private GameObject _backDoor = default;
         [SerializeField] private GameObject _frontDoor = default;
         [SerializeField, Range(0, 2000)] private int _money = 800;
         [SerializeField, Range(0, 2000)] private int _amountOfMoneyNeeded = 800;
-        [SerializeField] private List<ItemData> _collectedItems = new List<ItemData>();
+        [SerializeField] private ItemData _collectedItem = default;
         [SerializeField] private List<ItemGeneric> _itemsToSteal = new List<ItemGeneric>();
 
         protected override void Start()
         {
             _currentItemStealing = -1;
-            _collectedItems = new List<ItemData>();
             _itemsToSteal = new List<ItemGeneric>();
             _itemsToSteal.AddRange(GenericActions.RandomAddingPickupableItemsToList());
 
@@ -42,6 +42,9 @@ namespace Dawud.BT.Behavior
             BTSequence checkBackDoorStatusSeq = new BTSequence("Check is Back Door Unlocked(sequence)", 2);
             _goToDoorPrioritySel = new BTPrioritySelector("Go To Door(Priority selector)");
             BTSequence stealItemSeq = new BTSequence("Steal item(Sequence)");
+            BTRepeatNodeFromIndex returnBTToMainNode = new BTRepeatNodeFromIndex("Return to Main Node", _tree, 0, true);
+            BTSequence runAwaySeq = new BTSequence("Run Away (Sequence)");
+            _repeateRunAwaySeq = new BTRepeatNodeFromIndex("Return Run Away Node to start", runAwaySeq, 0, true);
 
             BTLeaf gotMoney = new BTLeaf("Got Money", GotMoney);
             BTLeaf checkDoorStatus = new BTLeaf("Check Door Status", CheckDoorStatus);
@@ -50,11 +53,14 @@ namespace Dawud.BT.Behavior
             BTLeaf goToItem = new BTLeaf("Go To Item", GoToItem);
             BTLeaf stealItem = new BTLeaf("Steal Item ", StealItem);
             BTLeaf goToVan = new BTLeaf("Go To Van", GoToVan);
+            BTLeaf runAway = new BTLeaf("Run Away", RunAway);
+            BTLeaf checkIsChased = new BTLeaf("Check is Chased", CheckIfStillChased);
 
             hasGotMoneyInvert.AddChildren(gotMoney);
 
             checkFrontDoorStatusSeq.AddChildren(goToFrontDoor);
             checkFrontDoorStatusSeq.AddChildren(checkDoorStatus);
+
             checkBackDoorStatusSeq.AddChildren(goToBackDoor);
             checkBackDoorStatusSeq.AddChildren(checkDoorStatus);
 
@@ -69,9 +75,15 @@ namespace Dawud.BT.Behavior
             stealSeq.AddChildren(stealItemSeq);
             stealSeq.AddChildren(goToVan);
 
+            runAwaySeq.AddChildren(runAway);
+            runAwaySeq.AddChildren(checkIsChased);
+            runAwaySeq.AddChildren(_repeateRunAwaySeq);
+            runAwaySeq.AddChildren(returnBTToMainNode);
+
             if (_tree.Children.Count <= 0)
             {
                 _tree.AddChildren(stealSeq);
+                _tree.AddChildren(runAwaySeq);
             }
         }
 
@@ -86,7 +98,7 @@ namespace Dawud.BT.Behavior
 
         private ProcessStatusEnum GoToItem()
         {
-            return GenericActions.GoToDestination(_itemsToSteal[_currentItemStealing + 1].gameObject, this);
+            return GenericActions.GoToDestination(_itemsToSteal[_currentItemStealing + 1].gameObject.transform.position, this);
         }
 
         private ProcessStatusEnum StealItem()
@@ -98,7 +110,7 @@ namespace Dawud.BT.Behavior
                 ItemData id = GenericActions.GetItemData(_itemsToSteal[_currentItemStealing + 1].gameObject);
                 if (id != null && id.Pickupable)
                 {
-                    _collectedItems.Add(id); // Add to the list if the component exists
+                    _collectedItem = id; // Add to the list if the component exists
                 }
 
                 _currentItemStealing++;
@@ -108,16 +120,17 @@ namespace Dawud.BT.Behavior
 
         private ProcessStatusEnum GoToVan()
         {
-            ProcessStatusEnum status = GenericActions.GoToDestination(_van, this);
+            ProcessStatusEnum status = GenericActions.GoToDestination(_van.transform.position, this);
             if (status.Equals(ProcessStatusEnum.SUCCESS))
             {
-                _money += _collectedItems[_currentItemStealing].Value;
+                _money += _collectedItem.Value;
                 _itemsToSteal[_currentItemStealing].gameObject.SetActive(false);
                 _itemsToSteal[_currentItemStealing].gameObject.transform.parent = null;
 
+                _collectedItem = null;
+
                 if (_currentItemStealing + 1 >= _itemsToSteal.Count)
                 {
-                    _collectedItems.Clear();
                     _itemsToSteal.Clear();
                     _currentItemStealing = -1;
                 }
@@ -127,19 +140,19 @@ namespace Dawud.BT.Behavior
 
         private ProcessStatusEnum GoToFrontDoor()
         {
-            _atCurrentDoor = _frontDoor;
-            return GenericActions.GoToDestination(_frontDoor, this);
+            _usingDoor = _frontDoor;
+            return GenericActions.GoToDestination(_frontDoor.transform.position, this);
         }
 
         private ProcessStatusEnum GoToBackDoor()
         {
-            _atCurrentDoor = _backDoor;
-            return GenericActions.GoToDestination(_backDoor, this);
+            _usingDoor = _backDoor;
+            return GenericActions.GoToDestination(_backDoor.transform.position, this);
         }
 
         private ProcessStatusEnum CheckDoorStatus()
         {
-            ProcessStatusEnum doorStatus = GenericActions.CheckDoorStatus(_atCurrentDoor.GetComponent<DoorLock>());
+            ProcessStatusEnum doorStatus = GenericActions.CheckDoorStatus(_usingDoor.GetComponent<DoorLock>());
 
             if (doorStatus.Equals(ProcessStatusEnum.SUCCESS))//if the door is unlocked, it will set that door to be no. 1 priority.
             {
@@ -152,12 +165,78 @@ namespace Dawud.BT.Behavior
                     _goToDoorPrioritySel.Children[_goToDoorPrioritySel.CurrentChild].SortOrder = 1;//Next set the current door that returned SUCCESS to no.1 priority
                 }
                 //_atCurrentDoor.GetComponent<DoorMovement>().StartMoveUpCoroutine();
-                _atCurrentDoor.SetActive(false);
-                _atCurrentDoor = null;
+                _usingDoor.SetActive(false);
+                //_atCurrentDoor = null;
                 return doorStatus;
             }
-            _atCurrentDoor = null;
+            _usingDoor = null;
             return doorStatus;
+        }
+
+        protected override void SawOtherAgent()
+        {
+            //foreach (NPCRoot cop in SeenAgents)
+            //{
+            //    if(cop.SeenAgents[0] == this)
+            //    {
+                    _tree.JumpToNode(1);
+            //        break;
+            //    }
+            //}
+        }
+
+        private ProcessStatusEnum CheckIfStillChased()
+        {
+            bool isChased = false;
+            int numOfFoundCops = 0;
+            foreach (NPCRoot cop in SeenAgents)
+            {
+                if (cop.SeenAgents[0] == this)
+                {
+                    numOfFoundCops++;
+                    break;
+                }
+            }
+
+            if(numOfFoundCops >= 1)
+            {
+                isChased = true;
+            }
+            _repeateRunAwaySeq.IsConditionMeet = isChased;
+           
+            return ProcessStatusEnum.SUCCESS;
+        }
+
+        private ProcessStatusEnum RunAway()
+        {
+            ProcessStatusEnum status = ProcessStatusEnum.RUNNING;
+
+            NPCRoot closestCop = null;
+            float smallestCopRobberDistance = 100000f;
+            foreach (NPCRoot cop in SeenAgents)
+            {
+                float checkDistance = Vector3.Distance(cop.transform.position, this.transform.position);
+                if (checkDistance < smallestCopRobberDistance)
+                {
+                    smallestCopRobberDistance = checkDistance;
+                    closestCop = cop;
+                }
+            }
+
+            if (_collectedItem != null)
+            {
+                float distanceToOpenDoor = Vector3.Distance(_usingDoor.transform.position, this.transform.position);
+                
+                if(distanceToOpenDoor <= smallestCopRobberDistance)
+                {
+                    return GoToVan();
+                }
+            }
+            else
+            {
+                status = GenericActions.GoToDestination(transform.position + (transform.position -closestCop.transform.position).normalized * (_seeDistance * 2), this);
+            }
+            return status;
         }
     }
 }
