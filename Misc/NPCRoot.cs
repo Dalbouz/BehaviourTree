@@ -122,7 +122,7 @@ namespace Dawud.BT.General
                 yield return TreeCheckEvery;
             }
 
-            _tree.SetAllNodesToDefaultValues();
+            _tree.ResetTree();
             _behaveCoroutine = null;
         }
 

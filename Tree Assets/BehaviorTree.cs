@@ -57,7 +57,7 @@ namespace Dawud.BT.General
         /// <summary>
         /// Sets all of the children nodes to Process status <see cref="ProcessStatusEnum.AWAIT"/> and sets its Current child to 0.
         /// </summary>
-        public void SetAllNodesToDefaultValues()
+        public void ResetTree()
         {
             Stack<BTNode> nodeStack = new Stack<BTNode>();
             nodeStack.Push(this);

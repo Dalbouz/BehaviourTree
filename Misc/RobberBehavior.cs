@@ -15,7 +15,7 @@ namespace Dawud.BT.Behavior
         private int _currentItemStealing = -1;
         private GameObject _usingDoor = default;
         private BTPrioritySelector _goToDoorPrioritySel = default;
-        private BTRepeatNodeFromIndex _repeateRunAwaySeq = default;
+        private BTRepeatNodeFromIndexWithCondition _repeateRunAwayCond = default;
 
         [SerializeField] private GameObject _van = default;
         [SerializeField] private GameObject _backDoor = default;
@@ -42,9 +42,9 @@ namespace Dawud.BT.Behavior
             BTSequence checkBackDoorStatusSeq = new BTSequence("Check is Back Door Unlocked(sequence)", 2);
             _goToDoorPrioritySel = new BTPrioritySelector("Go To Door(Priority selector)");
             BTSequence stealItemSeq = new BTSequence("Steal item(Sequence)");
-            BTRepeatNodeFromIndex returnBTToMainNode = new BTRepeatNodeFromIndex("Return to Main Node", _tree, 0, true);
+            BTRepeatNodeFromIndexWithCondition returnBTToMainNode = new BTRepeatNodeFromIndexWithCondition("Return to Main Node", _tree, 0, true);
             BTSequence runAwaySeq = new BTSequence("Run Away (Sequence)");
-            _repeateRunAwaySeq = new BTRepeatNodeFromIndex("Return Run Away Node to start", runAwaySeq, 0, true);
+            _repeateRunAwayCond = new BTRepeatNodeFromIndexWithCondition("Return Run Away Node to start", runAwaySeq, 0);
 
             BTLeaf gotMoney = new BTLeaf("Got Money", GotMoney);
             BTLeaf checkDoorStatus = new BTLeaf("Check Door Status", CheckDoorStatus);
@@ -77,7 +77,7 @@ namespace Dawud.BT.Behavior
 
             runAwaySeq.AddChildren(runAway);
             runAwaySeq.AddChildren(checkIsChased);
-            runAwaySeq.AddChildren(_repeateRunAwaySeq);
+            runAwaySeq.AddChildren(_repeateRunAwayCond);
             runAwaySeq.AddChildren(returnBTToMainNode);
 
             if (_tree.Children.Count <= 0)
@@ -175,14 +175,14 @@ namespace Dawud.BT.Behavior
 
         protected override void SawOtherAgent()
         {
-            //foreach (NPCRoot cop in SeenAgents)
-            //{
-            //    if(cop.SeenAgents[0] == this)
-            //    {
+            foreach (NPCRoot cop in SeenAgents)
+            {
+                if (cop.SeenAgents[0] == this)
+                {
                     _tree.JumpToNode(1);
-            //        break;
-            //    }
-            //}
+                    break;
+                }
+            }
         }
 
         private ProcessStatusEnum CheckIfStillChased()
@@ -202,7 +202,7 @@ namespace Dawud.BT.Behavior
             {
                 isChased = true;
             }
-            _repeateRunAwaySeq.IsConditionMeet = isChased;
+            _repeateRunAwayCond.IsConditionMeet = isChased;
            
             return ProcessStatusEnum.SUCCESS;
         }

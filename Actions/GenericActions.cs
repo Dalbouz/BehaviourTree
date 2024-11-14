@@ -102,6 +102,35 @@ namespace Dawud.BT.Actions
         }
 
         /// <summary>
+        /// Generic method for returning a random list of pick-up items form <see cref="ItemManager.PickupableItems"/>.
+        /// </summary>
+        /// <returns></returns>
+        public static List<GameObject> RandomShuffleGameObjectList(List<GameObject> givenList)
+        {
+            List<GameObject> list = new List<GameObject>();
+
+            List<int> rndIndexes = new List<int>();
+            int rndIndex = 0;
+            for (int i = 0; i < givenList.Count; i++)
+            {
+                do
+                {
+                    rndIndex = Random.Range(0, givenList.Count);
+                }
+                while (rndIndexes.Contains(rndIndex));
+
+                Debug.Log("Random index: " + rndIndex);
+                rndIndexes.Add(rndIndex);
+            }
+
+            for (int i = 0; i < rndIndexes.Count; i++)
+            {
+                list.Add(givenList[rndIndexes[i]]);
+            }
+            return list;
+        }
+
+        /// <summary>
         /// Set the <paramref name="item"/> gameobject as a child of the <paramref name="npc"/> gameobject. Return SUCCESS or FAILED.
         /// </summary>
         /// <param name="npc"></param>
