@@ -28,6 +28,11 @@ public class ItemManager : SingletonRoot<ItemManager>
         ResetPatrolPoints();
     }
 
+    /// <summary>
+    /// Returns a list of with patrol points. The caller can request any number of patrol points, its going to give back as many patrol points as it can.
+    /// </summary>
+    /// <param name="numbOfReqPatrolPoints"></param>
+    /// <returns></returns>
     public List<GameObject> GetAvailablePatrolPoints(int numbOfReqPatrolPoints)
     {
         if(_currentAvailablePatrolPointIndex >= _patrolPoints.Count)
@@ -50,9 +55,12 @@ public class ItemManager : SingletonRoot<ItemManager>
         return list;
     }
 
+    /// <summary>
+    /// Shuffles the Patrol points inside the list into a random order. Sets the <see cref="_currentAvailablePatrolPointIndex"/> to 0.
+    /// </summary>
     public void ResetPatrolPoints()
     {
-        _patrolPoints =GenericActions.RandomShuffleGameObjectList(_patrolPoints);
+        _patrolPoints = GenericActions.RandomShuffleGameObjectList(_patrolPoints);
         _currentAvailablePatrolPointIndex = 0;
     }
 }

@@ -102,7 +102,7 @@ namespace Dawud.BT.Actions
         }
 
         /// <summary>
-        /// Generic method for returning a random list of pick-up items form <see cref="ItemManager.PickupableItems"/>.
+        /// Generic method that takes a list of gameobjects and returns a random ordered list that was given to the method.
         /// </summary>
         /// <returns></returns>
         public static List<GameObject> RandomShuffleGameObjectList(List<GameObject> givenList)
