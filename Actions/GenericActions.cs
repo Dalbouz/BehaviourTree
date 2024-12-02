@@ -71,13 +71,13 @@ namespace KrampStudio.BT.Actions
         }
 
         /// <summary>
-        /// Generic method for returning a random list of pick-up items form <see cref="ItemManager.PickupableItems"/>.
+        /// Generic method for returning a random list of pick-up items form <see cref="ItemManager.ArtWorks"/>.
         /// </summary>
         /// <returns></returns>
         public static List<ItemGeneric> RandomAddingPickupableItemsToList()
         {
             List<ItemGeneric> list = new List<ItemGeneric>();
-            int numbOfItemsRnd = Random.Range(1, ItemManager.Instance.PickupableItems.Count + 1);
+            int numbOfItemsRnd = Random.Range(1, ItemManager.Instance.ArtWorks.Count + 1);
             Debug.Log("Number of random Items: " + numbOfItemsRnd);
 
             List<int> rndIndexes = new List<int>();
@@ -86,7 +86,7 @@ namespace KrampStudio.BT.Actions
             {
                 do
                 {
-                    rndIndex = Random.Range(0, ItemManager.Instance.PickupableItems.Count);
+                    rndIndex = Random.Range(0, ItemManager.Instance.ArtWorks.Count);
                 }
                 while (rndIndexes.Contains(rndIndex));
 
@@ -96,7 +96,7 @@ namespace KrampStudio.BT.Actions
 
             for (int i = 0; i < rndIndexes.Count; i++)
             {
-                list.Add(ItemManager.Instance.PickupableItems[rndIndexes[i]]);
+                list.Add(ItemManager.Instance.ArtWorks[rndIndexes[i]]);
             }
             return list;
         }

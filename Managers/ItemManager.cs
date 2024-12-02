@@ -10,15 +10,13 @@ using UnityEngine;
 /// </summary>
 public class ItemManager : SingletonRoot<ItemManager>
 {
-    [SerializeField] private List<ItemGeneric> _pickupableItems = new List<ItemGeneric>();
+    [SerializeField] private List<ItemGeneric> _artworks = new List<ItemGeneric>();
     [SerializeField] private List<GameObject> _patrolPoints = new List<GameObject>();
     private int _currentAvailablePatrolPointIndex = 0;
 
-    private int _scoreTest = 0;
-
-    public List<ItemGeneric> PickupableItems
+    public List<ItemGeneric> ArtWorks
     {
-        get { return _pickupableItems; }
+        get { return _artworks; }
     }
 
     public List<GameObject> PatrolPoints
