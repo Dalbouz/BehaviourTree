@@ -1,10 +1,10 @@
-using Dawud.BT.Enums;
+using KrampStudio.BT.Enums;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-namespace Dawud.BT.General
+namespace KrampStudio.BT.General
 {
     /// <summary>
     /// 

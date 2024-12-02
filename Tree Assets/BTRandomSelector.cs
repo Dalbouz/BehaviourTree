@@ -1,7 +1,7 @@
-using Dawud.BT.Enums;
-using Dawud.BT.Misc;
+using KrampStudio.BT.Enums;
+using KrampStudio.BT.Misc;
 
-namespace Dawud.BT.General
+namespace KrampStudio.BT.General
 {
     /// <summary>
     /// Node class that can hold multiple children nodes and if only one of them is SUCCESSFULL then the selector will return SUCCESS. It WIll stop when atleast one child of the Selector has returned SUCCESS. On the first tick of the process it will randomly shuffle up its child nodes.

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Dawud.BT.Misc
+namespace KrampStudio.BT.Misc
 {
     /// <summary>
     /// 

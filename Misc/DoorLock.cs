@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Dawud.BT.Behavior
+namespace KrampStudio.BT.Behavior
 {
     /// <summary>
     /// 

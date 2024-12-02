@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Dawud.BT.Misc
+namespace KrampStudio.BT.Misc
 {
     /// <summary>
     /// 

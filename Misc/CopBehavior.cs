@@ -1,28 +1,37 @@
-using Dawud.BT.Actions;
-using Dawud.BT.Enums;
+using KrampStudio.BT.Actions;
+using KrampStudio.BT.Enums;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Dawud.BT.General
+namespace KrampStudio.BT.General
 {
     /// <summary>
     /// 
     /// </summary>
     public class CopBehavior : NPCRoot
     {
-        [SerializeField] private List<GameObject> _patrolPoints = new List<GameObject>();
         [SerializeField] private int _numbOfPatrolPoints = default;
+        [SerializeField] private List<GameObject> _patrolPoints = new List<GameObject>();
         private int _currentPatrolPoint = 0;
         private bool _arePatrolPointsSet = false;
+        private bool _isChasing = false;
+        private NPCRoot _chasingRobber = default;
+        private BTRepeatNodeFromIndexWithCondition _repeateChaseWithCond = default;
+
+        public NPCRoot ChasingRobber
+        {
+            get { return _chasingRobber; }
+        }
 
         protected override void CreateBehavior()
         {
             BTSelector MainPatrolSel = new BTSelector("Main Patrol Selector");
             BTInverter SetPatrolPointsInver = new BTInverter("Set Patrol points Inverter");
             BTRepeatedSequence RepeatedPatrolSeq = new BTRepeatedSequence("Repeated Patrol Sequence", -1);
-            BTSelector ChaseRobberSel = new BTSelector("Chase Robber Selector");
-            BTRepeatNodeFromIndexWithCondition ReturnBTToPatrolNode = new BTRepeatNodeFromIndexWithCondition("Return to patrol node", _tree, 1, true);
+            BTSequence ChaseRobberSeq = new BTSequence("Chase Robber Sequence");
+            BTRepeatNodeFromIndexWithCondition ReturnBTToPatrolNode = new BTRepeatNodeFromIndexWithCondition("Return to patrol node", _tree, 0, true);
+            _repeateChaseWithCond = new BTRepeatNodeFromIndexWithCondition("Repeat chase Robber with condition", ChaseRobberSeq, 0);
 
             BTLeaf ChaseRobberLeaf = new BTLeaf("Chase Robber", TryToCatchRobber);
             BTLeaf GoToPatrolPointLeaf = new BTLeaf("Go To Patrol Point", GoToPatrolPoint);
@@ -33,13 +42,15 @@ namespace Dawud.BT.General
 
             MainPatrolSel.AddChildren(SetPatrolPointsInver);
             MainPatrolSel.AddChildren(RepeatedPatrolSeq);
-            ChaseRobberSel.AddChildren(ChaseRobberLeaf);
-            ChaseRobberSel.AddChildren(ReturnBTToPatrolNode);
+
+            ChaseRobberSeq.AddChildren(ChaseRobberLeaf);
+            ChaseRobberSeq.AddChildren(_repeateChaseWithCond);
+            ChaseRobberSeq.AddChildren(ReturnBTToPatrolNode);
 
             if (_tree.Children.Count <= 0)
             {
                 _tree.AddChildren(MainPatrolSel);
-                _tree.AddChildren(ChaseRobberSel);
+                _tree.AddChildren(ChaseRobberSeq);
             }
         }
 
@@ -77,12 +88,34 @@ namespace Dawud.BT.General
 
         private ProcessStatusEnum TryToCatchRobber()
         {
-            return ProcessStatusEnum.RUNNING;//for Testing
+            ProcessStatusEnum status = GenericActions.GoToDestination(_chasingRobber.transform.position, this);
+
+            if (status.Equals(ProcessStatusEnum.SUCCESS))
+            {
+                //he got the robber
+                _chasingRobber = null;
+                _isChasing = false;
+                _repeateChaseWithCond.IsConditionMeet = false;//it wont repeat the process
+            }
+            else
+            {
+                _repeateChaseWithCond.IsConditionMeet = true;
+            }
+
+            return status;
         }
 
         protected override void SawOtherAgent()
         {
-            
+            Debug.Log(this.name + " Saw: " + SeenAgents[0].name);
+
+            if (_isChasing)
+            {
+                return;
+            }
+            _tree.JumpToNode(1);
+            _isChasing = true;
+            _chasingRobber = SeenAgents[0];
         }
     }
 }

@@ -1,6 +1,6 @@
-using Dawud.BT.Enums;
+using KrampStudio.BT.Enums;
 
-namespace Dawud.BT.General
+namespace KrampStudio.BT.General
 {
     /// <summary>
     /// Node class that can hold multiple children nodes and if only one of them is SUCCESSFULL then the selector will return SUCCESS. It WIll stop when at least one child of the Selector has returned SUCCESS. This has a priority sorting algorithm, so the created Nodes inside the Children list need to have a given sorting order (int) so that it can sort out the child nodes into the correct order for execution.

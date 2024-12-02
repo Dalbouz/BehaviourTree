@@ -1,6 +1,7 @@
-using Dawud.BT.Actions;
-using Dawud.BT.General;
-using Dawud.BT.Misc;
+using KrampStudio.BT.Actions;
+using KrampStudio.BT.General;
+using KrampStudio.BT.Misc;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,6 +13,8 @@ public class ItemManager : SingletonRoot<ItemManager>
     [SerializeField] private List<ItemGeneric> _pickupableItems = new List<ItemGeneric>();
     [SerializeField] private List<GameObject> _patrolPoints = new List<GameObject>();
     private int _currentAvailablePatrolPointIndex = 0;
+
+    private int _scoreTest = 0;
 
     public List<ItemGeneric> PickupableItems
     {

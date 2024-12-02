@@ -1,6 +1,6 @@
-using Dawud.BT.Enums;
+using KrampStudio.BT.Enums;
 
-namespace Dawud.BT.General
+namespace KrampStudio.BT.General
 {
     /// <summary>
     /// Node class that can hold multiple Processes/Nodes and will return Success if all of its child nodes return Success. It will return Failed when one of its child processes/Nodes return Failed. When a child process return FAILED the SEQUENCE STOPS and returns FAILED.

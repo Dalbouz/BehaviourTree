@@ -1,11 +1,12 @@
 using UnityEngine;
-using Dawud.BT.General;
-using Dawud.BT.Enums;
-using Dawud.BT.Actions;
+using KrampStudio.BT.General;
+using KrampStudio.BT.Enums;
+using KrampStudio.BT.Actions;
 using System.Collections.Generic;
-using Dawud.BT.Misc;
+using KrampStudio.BT.Misc;
+using System;
 
-namespace Dawud.BT.Behavior
+namespace KrampStudio.BT.Behavior
 {
     /// <summary>
     /// 
@@ -175,20 +176,21 @@ namespace Dawud.BT.Behavior
 
         protected override void SawOtherAgent()
         {
-            foreach (NPCRoot cop in SeenAgents)
-            {
-                if (cop.SeenAgents[0] == this)
-                {
+            //foreach (NPCRoot cop in SeenAgents)
+            //{
+            //    if (cop.SeenAgents[0] == this)
+            //    {
                     _tree.JumpToNode(1);
-                    break;
-                }
-            }
+            //        break;
+            //    }
+            //}
         }
 
         private ProcessStatusEnum CheckIfStillChased()
         {
             bool isChased = false;
             int numOfFoundCops = 0;
+
             foreach (NPCRoot cop in SeenAgents)
             {
                 if (cop.SeenAgents[0] == this)

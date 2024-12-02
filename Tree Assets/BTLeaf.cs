@@ -1,6 +1,6 @@
-using Dawud.BT.Enums;
+using KrampStudio.BT.Enums;
 
-namespace Dawud.BT.General
+namespace KrampStudio.BT.General
 {
     /// <summary>
     /// Class that inherits from the Node class and can hold the Name and Action/Method of the currently running process. This is called a Leaf node and its the last node of the Behavior tree.

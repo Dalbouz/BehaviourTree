@@ -1,8 +1,8 @@
-using Dawud.BT.Enums;
+using KrampStudio.BT.Enums;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Dawud.BT.General
+namespace KrampStudio.BT.General
 {
     /// <summary>
     /// Node class for creating a Main Node(Behavior Tree) that holds all of its children nodes.

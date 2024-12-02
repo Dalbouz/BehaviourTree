@@ -1,7 +1,7 @@
-using Dawud.BT.Enums;
+using KrampStudio.BT.Enums;
 using System.Collections.Generic;
 
-namespace Dawud.BT.General
+namespace KrampStudio.BT.General
 {
     /// <summary>
     /// The base node for creating each other individual node for the Behaviour Tree. The node holds the current <see cref="Status"/> of the process, a list of all of its <see cref="Children"/>, an integer value of the <see cref="CurrentChild"/> active that is always set to 0 at the start, and the <see cref="Name"/> of the node.

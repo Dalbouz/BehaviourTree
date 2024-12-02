@@ -1,4 +1,4 @@
-namespace Dawud.BT.Enums
+namespace KrampStudio.BT.Enums
 {
     /// <summary>
     /// 

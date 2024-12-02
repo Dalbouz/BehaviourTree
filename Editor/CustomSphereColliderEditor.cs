@@ -1,4 +1,4 @@
-namespace Dawud.BT.Misc
+namespace KrampStudio.BT.Misc
 {
     using UnityEditor;
     using UnityEngine;

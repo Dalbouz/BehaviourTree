@@ -1,6 +1,6 @@
-using Dawud.BT.Enums;
+using KrampStudio.BT.Enums;
 
-namespace Dawud.BT.General
+namespace KrampStudio.BT.General
 {
     /// <summary>
     /// Node Class that can have only one child process/Node. It Inverts anything that its child note returns.

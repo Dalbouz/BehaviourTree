@@ -1,9 +1,9 @@
-using Dawud.BT.Behavior;
-using Dawud.BT.General;
+using KrampStudio.BT.Behavior;
+using KrampStudio.BT.General;
 using UnityEditor;
 using UnityEngine;
 
-namespace Dawud.BT.Misc
+namespace KrampStudio.BT.Misc
 {
     [CustomEditor(typeof(RobberBehavior))]
     public class RobberBehaviourEditor : Editor

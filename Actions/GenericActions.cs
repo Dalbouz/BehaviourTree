@@ -1,11 +1,11 @@
-using Dawud.BT.Behavior;
-using Dawud.BT.Enums;
-using Dawud.BT.General;
-using Dawud.BT.Misc;
+using KrampStudio.BT.Behavior;
+using KrampStudio.BT.Enums;
+using KrampStudio.BT.General;
+using KrampStudio.BT.Misc;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Dawud.BT.Actions
+namespace KrampStudio.BT.Actions
 {
     /// <summary>
     /// Generic Methods for calling via BT or leaf Node.
