@@ -1,7 +1,7 @@
 using UnityEngine;
-using Dawud.BT.Enums;
+using KrampStudio.BT.Enums;
 
-namespace Dawud.BT.Misc
+namespace KrampStudio.BT.Misc
 {
     /// <summary>
     /// 
